@@ -23,7 +23,7 @@ void Control::controlMain(std::string mode)
         pose_x_error = point_x - pose_x;
         pose_y_error = point_y - pose_y;
         pose_z_error = point_z - pose_z;
-        cmd[0][0] = pid.neuralPid(pose_x_error, "pose_x");
+        cmd[0][0] = pid.normalPid(pose_x_error, "pose_x");
         cmd[0][1] = pid.neuralPid(pose_y_error, "pose_y");
         cmd[0][2] = pid.normalPid(pose_z_error, "pose_z");
     }
@@ -35,7 +35,7 @@ void Control::controlMain(std::string mode)
                                 {"/state/pose/z", &pose_z},
                                 {"/point/pose/z", &point_z}});
         pose_z_error = point_z - pose_z;
-        cmd[0][0] = 0.3;
+        cmd[0][0] = 0;
         cmd[0][1] = pid.neuralPid(pose_y_error, "pose_y") / 100.0;
         cmd[0][2] = pid.normalPid(pose_z_error, "pose_z");
         cmd[1][2] = pid.normalPid(angle_z_error, "angle_z");

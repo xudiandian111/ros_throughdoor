@@ -145,7 +145,6 @@ void Pixhawk::mavrosMain()
         }
         else
         {
-            ROS_ERROR("not armed");
             Pixhawk::initParam();
         }
         control_cmd.linear.x = Parameter::getDouble("/control/speed/x");
@@ -154,7 +153,6 @@ void Pixhawk::mavrosMain()
         control_cmd.angular.x = 0.0;
         control_cmd.angular.y = 0.0;
         control_cmd.angular.z = Parameter::getDouble("/control/angle/z");
-        ROS_ERROR("speed%lf",control_cmd.linear.z);
         local_vel_pub.publish(control_cmd);
         time++;
         ros::spinOnce();

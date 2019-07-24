@@ -8,7 +8,7 @@ KeyControl::~KeyControl()
 }
 void KeyControl::controlMain(std::string key)
 {
-   if (Parameter::getString("/state/mode/current") == "takeoff")
+   if (Parameter::getString("/state/mode/current") == "fly")
     {
         Parameter::set("/state/mode/current", "key");
         ROS_WARN("mode key");
@@ -76,9 +76,10 @@ void KeyControl::keyMain()
     raw.c_cc[VEOL] = 1;
     raw.c_cc[VEOF] = 2;
     tcsetattr(kfd, TCSANOW, &raw);
-    std::string mode = Parameter::getString("/state/mode/current");
     while (1)
     {
+        std::string mode = Parameter::getString("/state/mode/current");
+
         if (Parameter::getBool("/params/other/threadrosout") == true)
         {
             break;

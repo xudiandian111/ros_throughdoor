@@ -38,9 +38,10 @@ double Pid::neuralPid(double error, std::string v)
 {
     double x[3], w[3], lasterror, result, sum,
         deadband, dcoef, vMax, vMin, kcoef,
-        wi, wp, wd;
+        wi, wp, wd, sumerror;
     std::string key = "/autopid/" + v + "/";
     Parameter::get<double>({{key + "lasterror", &lasterror},
+                            {key + "sumerror", &sumerror},
                             {key + "dcoef", &dcoef},
                             {key + "kcoef", &kcoef},
                             {key + "wi", &wi},
@@ -49,11 +50,12 @@ double Pid::neuralPid(double error, std::string v)
                             {key + "vMax", &vMax},
                             {key + "vMin", &vMin}});
     deadband = (vMax - vMin) * dcoef;
+    sumerror = sumerror + error;
     if (fabs(error) > deadband)
     {
-        x[0] = error;
-        x[1] = error - lasterror;
-        x[2] = error + lasterror;
+        x[0] = sumerror;
+        x[1] = error;
+        x[2] = error - lasterror;
         sum = fabs(wi) + fabs(wp) + fabs(wd);
         w[0] = wi / sum;
         w[1] = wp / sum;
@@ -64,7 +66,7 @@ double Pid::neuralPid(double error, std::string v)
     {
         result = 0;
     }
-    if(result>vMax)
+    if (result > vMax)
     {
         result = vMax;
     }
@@ -73,7 +75,8 @@ double Pid::neuralPid(double error, std::string v)
         result = vMin;
     }
     pidRules(error, result, x, key);
-    Parameter::set(key + "lasterror", error);
+    Parameter::set<double>({{key + "lasterror", error},
+                            {key + "sumerror", sumerror}});
     return result;
 }
 
