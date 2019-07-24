@@ -1,6 +1,4 @@
 #pragma once
-#include <ros/ros.h>
-//#include <std_msgs/String.h>
 class Parameter
 {
 public:
@@ -8,73 +6,43 @@ public:
     ~Parameter(void);
 
 public:
+    /**bebop_maincontrol**/
+    static double speed_land_x;
+    static double speed_auto_x;
+    /*Control PID*/
+    static double angle_kp;
+    static double angle_kd;
+    static double angle_ki;
+    static double dis_kp;
+    static double dis_kd;
+    static double dis_ki;
+    static double high_kp;
+    static double high_kd;
+    static double speed_kp;
+    static double speed_kd;
+    /*speed control*/
+    static double speed_straight;
+    static double speed_normal;
+    static double speed_low;    
+    static double speed_turn;
+
+    /*test flag*/
+    static bool turn_flag;
+    static bool cross_v_up_flag;
+    static bool cross_v_down_flag;
+    static bool land_flag;
+    static bool cross_state;
+    static bool special_flag;
     /*init*/
-    static void initParamServer();
-    template <typename T>
-    static bool get(const std::string key, T &value)
-    {
-        if(ros::param::get(key,value))
-        {
-            return true;
-        }
-        else
-        {
-            ROS_ERROR("get_error: %s is not exist!",key.c_str());
-            value = 0;
-            return false;
-        }
-    }
-    static double getDouble(const std::string key);
-    static int getInt(const std::string key);
-    static bool getBool(const std::string key);
-    static std::string getString(const std::string key);
-
-    static void setInt(const std::string key, const std::string v);
-
-    template <typename T>
-    static void set(const std::string key, T value)
-    {
-        ros::param::set(key, value);
-    }
-
-    static void add(const std::string key);
-    static void sub(const std::string key);
-/*new*/
-    static void initParam();
-    template <typename T>
-    static void set(std::map<std::string, T> map)
-    {
-        for (typename std::map<std::string, T>::iterator iter = map.begin(); iter != map.end(); iter++)
-        {
-            if (ros::param::has(iter->first))
-            {
-                ros::param::set(iter->first, iter->second);
-            }
-            else
-            {
-                ROS_ERROR("set_map_error: %s is not exist!", iter->first.c_str());
-            }
-        }
-    }
-
-    template <typename T>
-    static void get(std::map<std::string, T *> map)
-    {
-        for (typename std::map<std::string, T *>::iterator iter = map.begin(); iter != map.end(); iter++)
-        {
-            T value;
-            if (ros::param::get(iter->first, value))
-            {
-                *iter->second = value;
-            }
-            else
-            {
-                *iter->second = 0;
-                ROS_ERROR("getMore: %s is not exist!", iter->first.c_str());
-            }
-        }
-    }
-private:
-    template <typename T>
-    static void setAll(std::string key, T value);
+    static void initParameter();
+    /*cross*/
+    static bool is_cross;
+    static int fly_time;
+    static int turn_time;
+    static int turn;
+    /*flag*/
+    static bool turn_left_flag;
+    static bool turn_right_flag;
+    static int turn_left;
+    static int turn_right;
 };
