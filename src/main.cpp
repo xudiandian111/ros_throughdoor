@@ -1,26 +1,21 @@
-//当前已完成测试部分
-//bebop控制良好 转向测试良好 
-//待测试的部分 摄像头的转向
-#include "Bebop.h"
-#include "Common.h"
-#include "Control.h"
-#include "Detections.h"
-
+#include "Pixhawk.h"
+#include "KeyControl.h"
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
+/**
+ * 所有类依赖Parameter进行通信
+ * Parameter实现对ros的一些儿函数的封装
+ * **/
+
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "test_takeoff");
-    Bebop useBebop;
-    Detections useDetections;
-
-    boost::thread rosway(boost::bind(&Bebop::rosVersion, &useBebop));
-//    boost::thread camway(boost::bind(&Detections::cameraUse, &useDetections));
-    boost::thread keyway(boost::bind(&Bebop::keyVersion, &useBebop));
-    rosway.join();
+    ros::init(argc, argv, "offb_node");
+    Pixhawk pixhawk;
+    KeyControl keycontrol;
+    boost::thread rosway(boost::bind(&Pixhawk::mavrosMain, &pixhawk));
+    boost::thread keyway(boost::bind(&KeyControl::keyMain, &keycontrol));
     keyway.join();
-//    camway.join();
-
+    rosway.join();
     return 0;
 }

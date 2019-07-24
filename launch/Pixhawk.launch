@@ -1,0 +1,7 @@
+<launch>
+    <rosparam file="$(find yl)/configs/pid.yaml" command="load"/>
+    <rosparam file="$(find yl)/configs/init.yaml" command="load"/>
+    <rosparam file="$(find yl)/configs/params.yaml" command="load"/>
+    <rosparam file="$(find yl)/configs/control.yaml" command="load"/>
+    <node name="bebop" pkg="yl" type="yl_node" output="screen"/>
+</launch>

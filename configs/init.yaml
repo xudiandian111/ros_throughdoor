@@ -1,0 +1,10 @@
+## 以下为每次起飞都要初始化的参数
+init:
+  double:
+    a: /autopid/pose_x/lasterror
+    b: /autopid/pose_y/lasterror
+    c: /autopid/pose_z/lasterror
+    d: /normalpid/pose_x/lasterror
+    e: /normalpid/pose_y/lasterror
+    f: /normalpid/pose_z/lasterror
+    g: /normalpid/angle_z/lasterror

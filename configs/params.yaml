@@ -1,0 +1,23 @@
+params:
+  speed:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  other:
+    threadrosout: false
+state:
+  pose:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  speed:
+    normal: 0.045
+    high: 0.05
+    low: 0.02
+  mode:
+    current: land
+point:
+  pose:
+    x: 0.0
+    y: 0.0
+    z: 0.7

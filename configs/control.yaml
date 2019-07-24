@@ -1,0 +1,21 @@
+# speed param
+control:
+  speed:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  angle:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  # default param
+auto:
+  point:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  angle:
+    z: 0.0
+  flag:
+    line: false
+  
