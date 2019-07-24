@@ -101,19 +101,12 @@ void Pixhawk::mavrosMain()
             current_state.mode != "AUTO.LAND" &&
             (ros::Time::now() - last_request > ros::Duration(5.0)))
         {
-            arm_cmd.request.value = false;
             if( set_mode_client.call(land_set_mode)&&
                 land_set_mode.response.mode_sent)
             {
                 ROS_INFO("Autoland enabled");
                 time = 0;
             }
-            if( arming_client.call(arm_cmd) &&
-                arm_cmd.response.success)
-            {
-                ROS_INFO("Arm disabled");
-            }
-            arm_cmd.request.value = true;
             last_request = ros::Time::now();
         }
         else if ( current_state.mode != "OFFBOARD" &&
