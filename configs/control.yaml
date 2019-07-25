@@ -9,13 +9,33 @@ control:
     y: 0.0
     z: 0.0
   # default param
-auto:
+line:
   point:
     x: 0.0
     y: 0.0
     z: 0.0
   angle:
     z: 0.0
-  flag:
-    line: false
-  
+  flag: false
+land:
+  point:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  angle:
+    z: 0.0
+  flag: false
+door:
+  point:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  angle:
+    z: 0.0
+  flag: false
+QR:
+  info:
+    high: 0
+    order: 1
+    direction: 0
+  flag: false

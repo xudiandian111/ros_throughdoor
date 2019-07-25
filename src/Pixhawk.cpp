@@ -2,18 +2,12 @@
 #define keytest
 /**
  * mode 参数解释
- * 可能的分类
- * 分类一：
  * mode分为三个模式
  * land 模式设置为AUTO.LAND
- * takeoff 模式设置为定高飞行
+ * fly 模式设置为定高飞行
  * auto 模式设置为自动飞行
- * 分类二
- * mode分为四个模式
- * land 模式设置为AUTO.LAND
- * takeoff setlocalpoint 定点定高飞行
- * wait 定高飞行
- * auto 任务飞行
+ * 每次land和关闭auto会记录降落xy位置
+ * 可通过修改参数服务器中的 /point/pose来进行定点飞行
  * **/
 mavros_msgs::State Pixhawk::current_state;
 Pixhawk::Pixhawk()
@@ -34,16 +28,56 @@ void Pixhawk::initParam()
 }
 void Pixhawk::get_angle(const std_msgs::Float64::ConstPtr &msg)
 {
-    Parameter::set("/auto/angle/x", msg->data);
+    Parameter::set("/line/angle/x", msg->data);
 }
 void Pixhawk::get_dis(const std_msgs::Float64::ConstPtr &msg)
 {
-    Parameter::set("/auto/point/y", msg->data);
-    ROS_ERROR("okk");
+    Parameter::set("/line/point/y", msg->data);
 }
 void Pixhawk::get_flag_line(const std_msgs::Bool::ConstPtr &msg)
 {
-    Parameter::set("/auto/flag/line", msg->data);
+    Parameter::set("/line/flag", msg->data);
+}
+void Pixhawk::get_flag_door(const std_msgs::Bool::ConstPtr &msg)
+{
+    Parameter::set("/door/flag", msg->data);
+}
+void Pixhawk::get_point_door(const geometry_msgs::Point::ConstPtr &msg)
+{
+    Parameter::set<double>({{"/door/pose/x", msg->x},
+                            {"/door/pose/y", msg->y},
+                            {"/door/pose/z", msg->z}});
+}
+void Pixhawk::get_flag_land(const std_msgs::Bool::ConstPtr &msg)
+{
+    Parameter::set("/land/flag", msg->data);
+}
+void Pixhawk::get_point_land(const geometry_msgs::Point::ConstPtr &msg)
+{
+    Parameter::set<double>({{"/land/point/x", msg->x},
+                            {"/land/point/y", msg->y}});
+}
+void Pixhawk::get_flag_QR(const std_msgs::Bool::ConstPtr &msg)
+{
+    Parameter::set("/QR/flag", msg->data);
+}
+void Pixhawk::get_info_QR(const std_msgs::String::ConstPtr &msg)
+{
+    std::stringstream ss(msg->data);
+    double data[3] = {0, 0, 0};
+    for (int i = 0; i < 3; i++)
+    {
+        if(ss>>data[i])
+        {
+        }
+        else
+        {
+            break;
+        }
+    }
+    Parameter::set<double>({{"/QR/info/order", data[0]},
+                            {"/QR/info/high", data[1]},
+                            {"/QR/info/direction", data[2]}});
 }
 void Pixhawk::state_cb(const mavros_msgs::State::ConstPtr &msg)
 {
@@ -70,6 +104,15 @@ void Pixhawk::mavrosMain()
     angle_sub = nh.subscribe<std_msgs::Float64>("/Lines/angle", 2, Pixhawk::get_angle);
     dis_sub = nh.subscribe<std_msgs::Float64>("/Lines/dis", 2, Pixhawk::get_dis);
     line_sub = nh.subscribe<std_msgs::Bool>("/Lines/flag_line", 2, Pixhawk::get_flag_line);
+
+    flag_land_sub = nh.subscribe<std_msgs::Bool>("/DetectLand/flag_land", 2, Pixhawk::get_flag_land);
+    point_land_sub = nh.subscribe<geometry_msgs::Point>("/Land/center", 2, Pixhawk::get_point_land);
+
+    flag_door_sub = nh.subscribe<std_msgs::Bool>("/Door/flag_door", 2, Pixhawk::get_flag_door);
+    point_door_sub = nh.subscribe<geometry_msgs::Point>("/Door/center", 2, Pixhawk::get_point_door);
+
+    flag_QR_sub = nh.subscribe<std_msgs::Bool>("/ScanQR/QR_inform", 2, Pixhawk::get_flag_QR);
+    info_QR_sub = nh.subscribe<std_msgs::String>("/ScanQR/QR_flag", 2, Pixhawk::get_info_QR);
 
     set_mode_client = nh.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
     arming_client = nh.serviceClient<mavros_msgs::CommandBool>
@@ -147,6 +190,13 @@ void Pixhawk::mavrosMain()
         control_cmd.angular.y = 0.0;
         control_cmd.angular.z = Parameter::getDouble("/control/angle/z");
         local_vel_pub.publish(control_cmd);
+        if (mode == "key")
+        {
+            Parameter::set<double>({{"/control/speed/x", 0.0},
+                                    {"/control/speed/y", 0.0},
+                                    {"/control/speed/z", 0.0},
+                                    {"/control/angle/z", 0.0}});
+        }
         time++;
         ros::spinOnce();
         rate.sleep();

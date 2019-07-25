@@ -1,3 +1,4 @@
+#pragma once
 #include "Pid.h"
 class Control
 {
@@ -8,4 +9,5 @@ public:
     Control();
     ~Control();
     void controlMain(std::string mode);
+    void controlCheck();
 };

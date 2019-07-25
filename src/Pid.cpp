@@ -1,5 +1,5 @@
 #include "Pid.h"
-/*在干扰模式固定的情况下收敛速度较快 在干扰有变的时候会出现收敛速度变慢*/
+/*似乎自适应PID在实物上表现并不是太好 在仿真平台上表现良好*/
 Pid::Pid()
 {
 
@@ -79,20 +79,33 @@ double Pid::neuralPid(double error, std::string v)
                             {key + "sumerror", sumerror}});
     return result;
 }
-
+/**
+ * 常规的位置型PID
+ * **/
 double Pid::normalPid(double error, std::string v)
 {
     std::string key = "/normalpid/" + v + "/";
-    double lasterror, kp, ki, kd, d_error, result, sumerror;
+    double lasterror, kp, ki, kd, d_error, result, sumerror,
+            vMax,vMin;
     Parameter::get<double>({{key + "lasterror", &lasterror},
                             {key + "sumerror", &sumerror},
                             {key + "kp", &kp},
                             {key + "ki", &ki},
-                            {key + "kd", &kd}});
+                            {key + "kd", &kd},
+                            {key + "vMax", &vMax},
+                            {key + "vMin", &vMin}});
     d_error = error - lasterror;
     sumerror = error + sumerror;
     result = kp * error + kd * d_error;
     Parameter::set<double>({{key + "lasterror", error},
                             {key + "sumerror", sumerror}});
+    if (result > vMax)
+    {
+        result = 0.8;
+    }
+    else if (result < vMin)
+    {
+        result = -0.8;
+    }
     return result;
 }

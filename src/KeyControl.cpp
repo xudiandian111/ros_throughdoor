@@ -53,7 +53,6 @@ void KeyControl::controlMain(std::string key)
     }
     Parameter::set<double>({{"/control/speed/x", cmd[0][0]},
                             {"/control/speed/y", cmd[0][1]},
-                            {"/control/speed/z", cmd[0][2]},
                             {"/control/angle/x", cmd[1][0]},
                             {"/control/angle/y", cmd[1][1]},
                             {"/control/angle/z", cmd[1][2]}});
@@ -139,9 +138,16 @@ void KeyControl::keyMain()
                 ROS_WARN("mode land");
                 break;
             case 't':
-                Parameter::set("/state/mode/current", "fly");
-                Parameter::initParam();
-                ROS_WARN("mode takeoff");
+                if(mode == "land")
+                {
+                    Parameter::set("/state/mode/current", "fly");
+                    Parameter::initParam();
+                    ROS_WARN("mode takeoff");
+                }
+                else
+                {
+                    ROS_ERROR("ERROR:You are not in land mode");
+                }
                 break;
             case 'w':
                 controlMain("forward");

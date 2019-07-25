@@ -8,8 +8,6 @@ public:
     ~Parameter(void);
 
 public:
-    /*init*/
-    static void initParamServer();
     template <typename T>
     static bool get(const std::string key, T &value)
     {
@@ -30,16 +28,11 @@ public:
     static std::string getString(const std::string key);
 
     static void setInt(const std::string key, const std::string v);
-
     template <typename T>
     static void set(const std::string key, T value)
     {
         ros::param::set(key, value);
     }
-
-    static void add(const std::string key);
-    static void sub(const std::string key);
-/*new*/
     static void initParam();
     template <typename T>
     static void set(std::map<std::string, T> map)
@@ -74,6 +67,7 @@ public:
             }
         }
     }
+    static void debug();
 private:
     template <typename T>
     static void setAll(std::string key, T value);

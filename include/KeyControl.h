@@ -1,3 +1,4 @@
+#pragma once
 #include <sys/poll.h>
 #include <termios.h>
 #include <boost/thread/thread.hpp>
