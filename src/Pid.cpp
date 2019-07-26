@@ -1,5 +1,5 @@
 #include "Pid.h"
-/*似乎自适应PID在实物上表现并不是太好 在仿真平台上表现良好*/
+/*To 自适应Pid需要调参数*/
 Pid::Pid()
 {
 
@@ -96,7 +96,7 @@ double Pid::normalPid(double error, std::string v)
                             {key + "vMin", &vMin}});
     d_error = error - lasterror;
     sumerror = error + sumerror;
-    result = kp * error + kd * d_error;
+    result = kp * error + kd * d_error + ki * sumerror;
     Parameter::set<double>({{key + "lasterror", error},
                             {key + "sumerror", sumerror}});
     if (result > vMax)
