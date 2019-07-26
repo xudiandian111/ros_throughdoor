@@ -120,7 +120,7 @@ void Pixhawk::mavrosMain()
     local_vel_pub = nh.advertise<geometry_msgs::Twist>
             ("mavros/setpoint_velocity/cmd_vel_unstamped", 1);
     ros::Rate rate(20.0);
-    
+
     while (ros::ok() && !current_state.connected)
     {
         ros::spinOnce();

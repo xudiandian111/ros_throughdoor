@@ -145,6 +145,14 @@ add_executable(${PROJECT_NAME}_node
     src/Pixhawk.cpp
 #    src/StandardLine.cpp
     )
+## find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation std_msgs)
+## add_message_files(
+##  FILES
+##  Debug.msg
+## )
+## catkin_package(
+## CATKIN_DEPENDS message_runtime
+## )
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

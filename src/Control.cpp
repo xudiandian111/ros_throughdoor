@@ -63,18 +63,26 @@ void Control::controlMain(std::string mode)
             }
             else if(Parameter::getBool("/QR/flag")==true)//竖直门
             {
+                Parameter::get<double>({{"/QR/info/high", &point_z},
+                                        {"/state/pose/z", &pose_z},
+                                        {"/control/point/y", &pose_y_error},
+                                        {"/control/angle/z", &angle_z_error}});
                 if (Parameter::getBool("/QR/info/direction") == 1) //向上
                 {
-
+                    pose_z_error = point_z/100.0 - pose_z - 0.3;
                 }
                 else if (Parameter::getBool("/QR/info/direction") == 2) //向下
                 {
-
+                    pose_z_error = point_z / 100.0 + 0.4 - pose_z;
                 }
                 else if (Parameter::getBool("/QR/info/direction") == 3)
                 {
-
+                    pose_z_error = point_z / 100.0 + 0.4 - pose_z;
                 }
+                cmd[0][0] = 0;
+                cmd[0][1] = pid.normalPid(pose_y_error, "pose_y") / 100;
+                cmd[0][2] = pid.normalPid(pose_z_error, "pose_z");
+                cmd[1][2] = pid.normalPid(angle_z_error, "angle_z");
             }
         }
         else
@@ -109,4 +117,7 @@ void Control::controlMain(std::string mode)
                                 {"/control/speed/z", cmd[0][2]},
                                 {"/control/angle/z", cmd[1][2]}});
     }
+#ifdef DEBUG
+    Parameter::debug();
+#endif
 }
