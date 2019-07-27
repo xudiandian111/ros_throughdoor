@@ -61,7 +61,7 @@ normalpid:
     vMin: -1.2
     lasterror: 0.0
     sumerror: 0.0
-    kp: 1.6
+    kp: 1.45
     ki: 0.35
     kd: 0.35
   angle_z:

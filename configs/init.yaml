@@ -8,3 +8,4 @@ init:
     e: /normalpid/pose_y/lasterror
     f: /normalpid/pose_z/lasterror
     g: /normalpid/angle_z/lasterror
+    h: /normalpid/pose_z/sumerror

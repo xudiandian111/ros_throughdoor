@@ -87,6 +87,7 @@ void Control::controlMain(std::string mode)
         }
         else
         {
+            ROS_ERROR("line mode");
             Parameter::get<double>({{"/line/angle/z", &angle_z_error},
                                     {"/line/point/y", &pose_y_error},
                                     {"/state/pose/z", &pose_z},

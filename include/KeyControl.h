@@ -1,10 +1,9 @@
 #pragma once
 #include <sys/poll.h>
-#include <termios.h>
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 #include "Parameter.h"
-
+#include <termio.h>
 class KeyControl
 {
 private:

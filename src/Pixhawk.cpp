@@ -44,9 +44,9 @@ void Pixhawk::get_flag_door(const std_msgs::Bool::ConstPtr &msg)
 }
 void Pixhawk::get_point_door(const geometry_msgs::Point::ConstPtr &msg)
 {
-    Parameter::set<double>({{"/door/pose/x", msg->x},
-                            {"/door/pose/y", msg->y},
-                            {"/door/pose/z", msg->z}});
+    Parameter::set<double>({{"/door/point/x", msg->x},
+                            {"/door/point/y", msg->y},
+                            {"/door/point/z", msg->z}});
 }
 void Pixhawk::get_flag_land(const std_msgs::Bool::ConstPtr &msg)
 {
@@ -183,6 +183,7 @@ void Pixhawk::mavrosMain()
         {
             Pixhawk::initParam();
         }
+//        control.controlMain(mode);
         control_cmd.linear.x = Parameter::getDouble("/control/speed/x");
         control_cmd.linear.y = Parameter::getDouble("/control/speed/y");
         control_cmd.linear.z = Parameter::getDouble("/control/speed/z");

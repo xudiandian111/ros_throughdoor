@@ -61,22 +61,20 @@ void KeyControl::controlMain(std::string key)
 void KeyControl::keyMain()
 {
     /************必须开小写键盘！！！*************************************/
-    int kfd = 0;
-    char c;
-    struct termios cooked, raw;
-    struct pollfd ufd;
-    ufd.fd = kfd;
-    ufd.events = POLLIN;
-    int num;
-    int y;
-    tcgetattr(kfd, &cooked);
-    memcpy(&raw, &cooked, sizeof(struct termios));
-    raw.c_lflag &= ~(ICANON | ECHO);
-    raw.c_cc[VEOL] = 1;
-    raw.c_cc[VEOF] = 2;
-    tcsetattr(kfd, TCSANOW, &raw);
+    char in;
+    struct termios new_settings;
+    struct termios stored_settings;
+    tcgetattr(0,&stored_settings);
+    new_settings = stored_settings;
+    new_settings.c_lflag &= (~ICANON);
+    new_settings.c_cc[VTIME] = 0;
+    tcgetattr(0,&stored_settings);
+    new_settings.c_cc[VMIN] = 1;
+    tcsetattr(0,TCSANOW,&new_settings);
+    char value;
     while (1)
     {
+        value = getchar();
         std::string mode = Parameter::getString("/state/mode/current");
 
         if (Parameter::getBool("/params/other/threadrosout") == true)
@@ -84,28 +82,7 @@ void KeyControl::keyMain()
             break;
         }
         boost::this_thread::interruption_point();
-        int num;
-        num = poll(&ufd, 1, 250);
-        if (num < 0)
-        {
-            perror("poll():");
-            continue;
-            return;
-        }
-        else if (num > 0)
-        {
-            if (read(kfd, &c, 1) < 0)
-            {
-                perror("read():");
-                continue;
-                return;
-            }
-        }
-        else
-        {
-            continue;
-        }
-        switch (c)
+        switch (value)
         {
             case 'b': //auto_control
 #ifdef keytest
