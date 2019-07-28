@@ -32,7 +32,7 @@ void Pixhawk::get_angle(const std_msgs::Float64::ConstPtr &msg)
 }
 void Pixhawk::get_dis(const std_msgs::Float64::ConstPtr &msg)
 {
-    Parameter::set("/line/point/y", msg->data);
+    Parameter::set("/line/point/y", msg->data / 100.0);
 }
 void Pixhawk::get_flag_line(const std_msgs::Bool::ConstPtr &msg)
 {
@@ -44,9 +44,9 @@ void Pixhawk::get_flag_door(const std_msgs::Bool::ConstPtr &msg)
 }
 void Pixhawk::get_point_door(const geometry_msgs::Point::ConstPtr &msg)
 {
-    Parameter::set<double>({{"/door/point/x", msg->x},
-                            {"/door/point/y", msg->y},
-                            {"/door/point/z", msg->z}});
+    Parameter::set<double>({{"/door/point/x", msg->x / 100.0},
+                            {"/door/point/y", msg->y / 100.0},
+                            {"/door/point/z", msg->z / 100.0}});
 }
 void Pixhawk::get_flag_land(const std_msgs::Bool::ConstPtr &msg)
 {
@@ -54,8 +54,8 @@ void Pixhawk::get_flag_land(const std_msgs::Bool::ConstPtr &msg)
 }
 void Pixhawk::get_point_land(const geometry_msgs::Point::ConstPtr &msg)
 {
-    Parameter::set<double>({{"/land/point/x", msg->x},
-                            {"/land/point/y", msg->y}});
+    Parameter::set<double>({{"/land/point/x", msg->x / 100.0},
+                            {"/land/point/y", msg->y / 100.0}});
 }
 void Pixhawk::get_flag_QR(const std_msgs::Bool::ConstPtr &msg)
 {
@@ -76,7 +76,7 @@ void Pixhawk::get_info_QR(const std_msgs::String::ConstPtr &msg)
         }
     }
     Parameter::set<double>({{"/QR/info/order", data[0]},
-                            {"/QR/info/high", data[1]},
+                            {"/QR/info/high", data[1] / 100.0},
                             {"/QR/info/direction", data[2]}});
 }
 void Pixhawk::state_cb(const mavros_msgs::State::ConstPtr &msg)
@@ -86,9 +86,16 @@ void Pixhawk::state_cb(const mavros_msgs::State::ConstPtr &msg)
 
 void Pixhawk::readPose(const geometry_msgs::PoseStamped::ConstPtr &msg)
 {
+    double w, x, y, z, yaw;
+    w = msg->pose.orientation.w;
+    x = msg->pose.orientation.x;
+    y = msg->pose.orientation.y;
+    z = msg->pose.orientation.z;
+    yaw = atan(4 * (w * x + y * z) / (1 - 2 * (y * y + z * z)));
     Parameter::set<double>({{"/state/pose/x", msg->pose.position.x},
                             {"/state/pose/y", msg->pose.position.y},
-                            {"/state/pose/z", msg->pose.position.z}});
+                            {"/state/pose/z", msg->pose.position.z},
+                            {"/state/angle/z", yaw}});
 }
 void Pixhawk::mavrosMain()
 {
@@ -121,11 +128,12 @@ void Pixhawk::mavrosMain()
             ("mavros/setpoint_velocity/cmd_vel_unstamped", 1);
     ros::Rate rate(20.0);
 
-    while (ros::ok() && !current_state.connected)
-    {
-        ros::spinOnce();
-        rate.sleep();
-    }
+//     while (ros::ok() && !current_state.connected)
+//     {
+// //        control.controlMain("auto");
+//         ros::spinOnce();
+//         rate.sleep();
+//     }
     ROS_WARN("cennected");
 
     offb_set_mode.request.custom_mode = "OFFBOARD";

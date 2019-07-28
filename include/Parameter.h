@@ -18,7 +18,6 @@ public:
         else
         {
             ROS_ERROR("get_error: %s is not exist!",key.c_str());
-            value = 0;
             return false;
         }
     }

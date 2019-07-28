@@ -49,13 +49,13 @@ normalpid:
     ki: 0.0
     kd: 0.2
   pose_y:
-    vMax: 0.5
-    vMin: -0.5
+    vMax: 50
+    vMin: -50
     lasterror: 0.0
     sumerror: 0.0
-    kp: 0.7
+    kp: 0.3
     ki: 0.0
-    kd: 0.2
+    kd: 0.05
   pose_z:
     vMax: 1.2
     vMin: -1.2

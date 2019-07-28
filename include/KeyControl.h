@@ -8,6 +8,7 @@ class KeyControl
 {
 private:
     void controlMain(std::string key);
+    char getKey();
 
 public:
     KeyControl();

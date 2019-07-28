@@ -8,6 +8,12 @@ control:
     x: 0.0
     y: 0.0
     z: 0.0
+  task:
+    name: auto
+    step: 0
+    x: 0.0
+    y: 0.0
+    z: 0.0
   # default param
 line:
   point:

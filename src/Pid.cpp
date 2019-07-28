@@ -101,11 +101,11 @@ double Pid::normalPid(double error, std::string v)
                             {key + "sumerror", sumerror}});
     if (result > vMax)
     {
-        result = 0.8;
+        result = vMax;
     }
     else if (result < vMin)
     {
-        result = -0.8;
+        result = vMin;
     }
     return result;
 }

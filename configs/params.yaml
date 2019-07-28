@@ -10,10 +10,14 @@ state:
     x: 0.0
     y: 0.0
     z: 0.0
+  angle:
+    x: 0.0
+    y: 0.0
+    z: 0.0
   speed:
-    normal: 0.045
-    high: 0.05
-    low: 0.02
+    normal: 0.3
+    high: 0.45
+    low: 0.6
   mode:
     current: land
 point:

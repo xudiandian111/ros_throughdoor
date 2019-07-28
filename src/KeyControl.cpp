@@ -58,10 +58,8 @@ void KeyControl::controlMain(std::string key)
                             {"/control/angle/z", cmd[1][2]}});
     ROS_INFO("key:%s", key.c_str());
 }
-void KeyControl::keyMain()
+char KeyControl::getKey()
 {
-    /************必须开小写键盘！！！*************************************/
-    char in;
     struct termios new_settings;
     struct termios stored_settings;
     tcgetattr(0,&stored_settings);
@@ -69,18 +67,23 @@ void KeyControl::keyMain()
     new_settings.c_lflag &= (~ICANON);
     new_settings.c_cc[VTIME] = 0;
     tcgetattr(0,&stored_settings);
-    new_settings.c_cc[VMIN] = 1;
+    new_settings.c_cc[VMIN] = 0;
     tcsetattr(0,TCSANOW,&new_settings);
-    char value;
-    while (1)
-    {
-        value = getchar();
-        std::string mode = Parameter::getString("/state/mode/current");
+    return getchar();
+}
+void KeyControl::keyMain()
+{
+    /************小写***********************************/
 
+    char value;
+    for (;;)
+    {
         if (Parameter::getBool("/params/other/threadrosout") == true)
         {
             break;
         }
+        value = getKey();
+        std::string mode = Parameter::getString("/state/mode/current");
         boost::this_thread::interruption_point();
         switch (value)
         {
