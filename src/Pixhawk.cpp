@@ -128,12 +128,11 @@ void Pixhawk::mavrosMain()
             ("mavros/setpoint_velocity/cmd_vel_unstamped", 1);
     ros::Rate rate(20.0);
 
-//     while (ros::ok() && !current_state.connected)
-//     {
-// //        control.controlMain("auto");
-//         ros::spinOnce();
-//         rate.sleep();
-//     }
+    while (ros::ok() && !current_state.connected)
+    {
+        ros::spinOnce();
+        rate.sleep();
+    }
     ROS_WARN("cennected");
 
     offb_set_mode.request.custom_mode = "OFFBOARD";
@@ -147,7 +146,7 @@ void Pixhawk::mavrosMain()
     while (ros::ok())
     {
         mode = Parameter::getString("/state/mode/current");
-
+/*******************************以下无需修改**********************************************/
         if( mode == "land" &&
             current_state.mode != "AUTO.LAND" &&
             (ros::Time::now() - last_request > ros::Duration(5.0)))
@@ -182,7 +181,7 @@ void Pixhawk::mavrosMain()
             }
             last_request = ros::Time::now();
         }
-
+/*******************************以上无需修改**********************************************/
         if(current_state.armed)
         {
             control.controlMain(mode);
@@ -191,7 +190,6 @@ void Pixhawk::mavrosMain()
         {
             Pixhawk::initParam();
         }
-//        control.controlMain(mode);
         control_cmd.linear.x = Parameter::getDouble("/control/speed/x");
         control_cmd.linear.y = Parameter::getDouble("/control/speed/y");
         control_cmd.linear.z = Parameter::getDouble("/control/speed/z");
